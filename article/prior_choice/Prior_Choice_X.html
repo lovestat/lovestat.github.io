@@ -13,10 +13,10 @@
 class: center, middle, inverse, title-slide
 
 # Prior Choice
-## how to choose <br/>a good prior
+## how to choose a good prior
 ### Shangchen Song
-### UF
-### 2020/12/12 (updated: 2020-11-29)
+### University of Florida
+### 2020/12/01 (updated: 2020-11-30)
 
 ---
 
@@ -24,9 +24,10 @@ class: center, middle, inverse, title-slide
 
 
 
-# The Role of Prior Distribution
+## What is Prior Distribution
 
-The prior distribution is a key part of Bayesian inference and represents the information about an uncertain parameter `\(\theta\)` that is combined with the probability distribution of new data to yield the **posterior distribution**, which in turn is used for future inferences and decisions involving `\(\theta\)` .
+
+The prior distribution is a key part of Bayesian inference and represents the information about an uncertain parameter `\(\theta\)` that is combined with the probability distribution of new data to yield the **posterior distribution**, which in turn is used for future inferences and decisions involving `\(\theta\)`.
 
 
 &lt;br/&gt;
@@ -36,27 +37,194 @@ $$
 
 ---
 
-# Key Issues for Prior Choice
+
+
+## Why the Prior Distribution is important
+
+- Unreasonable prior may cause improper posterior distribution.
+
+- For all `\(\theta\)` for which `\(\pi(\theta) = 0\)`, we necessarily have `\(p(\theta | y) = 0\)`. If the prior does not contain all range of the parameter space, the posterior will not consider the excluding part.
+
+- If the sample size is small, the prior distribution is very important. The posterior distribution will utilize the information from prior considerably.
+    - although large sample sizes, reasonable choices of prior distributions will have minor effects on posterior inferences. 
+
+
+???
+
+The next is the reason why the prior distribution is important?
+
+- an important first observation is that For all `\(\theta\)` for which the prior pdf, `\(\pi(\theta) = 0\)`, we necessarily have the posterior pdf, `\(p(\theta | y), = 0\)`. Which means that, if we previous believe that the parameter is not possible to appear than it would not appear in the posterior distribution.
+
+
+- second, If the sample size is small, the prior distribution is very important. So, we have to be careful to specify a reasonable prior. One remedy methods is that models can be set up hierarchically, so that clusters of parameters have shared prior distributions, which can themselves be estimated from previous data.
+
+- With large sample sizes, reasonable choices of prior distributions will have minor effects on posterior inferences. In practice one can check the dependence on prior distributions by a sensitivity analysis: comparing posterior inferences under different reasonable choices of prior distribution
+
+---
+
+## Issue to Think for the Prior Choice
 
 
 1. What information is going into the prior distribution.
 
-  - Should be include all possible values of the parameter of inserst
+  - must include all possible values of the parameter of interest.
+  - should include reasonable expert information we have for the parameter.
 &lt;br/&gt;&lt;br/&gt;
 2. The properties of the resulting posterior distribution.
 
-  - Proper or improper;
-  - Closed form or not, although can be overcome by MCMC algorithm.
+  - proper or improper;
+  - closed form or not, although can be overcome by MCMC algorithm.
+  
+---
+
+class: inverse, middle, center
+
+# The Types of The Prior Distribution
+
+---
+# Noninformative Prior
+
+- It is also called as **diffuse/default/low-informative/uniform/objective** prior 
+
+- it essentially reflects a lack of strong and precisely quantified prior information.
+
+- it assigns a relatively equal likelihood among outcomes. It brings minimal impact for the posterior distribution so that the information in the likelihood dominates the posterior.
+
+- the resulting posterior distribution can have good frequentist properties.
+
+- it can take some principles like such as symmetry or maximizing entropy given constraints; examples are the Jeffreys prior or Bernardo's reference prior. 
+
+- when a family of conjugate priors exists, choosing a prior from that family simplifies calculation of the posterior distribution. (Super-vague but proper prior)
+
+- it may cause unexpected parameter value. (like tomorrow's temperature could be 100 degree with small probability)
+---
+
+## Noninformative Prior: Flat Prior
+
+A **flat prior** is a uniform prior on the parameter: `\(f(θ)\)` is constant or written as `\(f(θ) \propto 1\)`
+
+
+
+  - straightforward
+
+  - the final posterior could be improper.
+    - e.g. for the nonlinear models, the flat prior should never be used, because it will often result in the improper posterior.
+
 
 
 ---
 
-# The Influence of Prior Distribution
+## Example
+Suppose that `\(Y_1, . . . , Y_n\)` are form ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) ≡ 1\)`.
 
-- With large sample sizes, reasonable choices of prior distributions will have minor effects on posterior inferences. In practice one can check the dependence on prior distributions by a sensitivity analysis: comparing posterior inferences under different reasonable choices of prior distribution
 
-- If the sample size is small, the prior distribution becomes more important. In many cases, however, models can be set up hierarchically, so that clusters of parameters have shared prior distributions, which can themselves be
-estimated from previous data.
+Of course this prior is not a probability distribution, but it turns
+out that we can still formally carry out the calculation of a
+posterior, as follows:
+
+- The product of the likelihood and the prior is just the
+likelihood.
+
+- If we can normalize the likelihood to be a probability distribution over `\(\mu\)`, then this will be a well-defined posterior.
+
+Note that in this case the posterior is just a scaled version of likelihood, so the **posterior mode** is exactly the same as the **MLE**
+
+---
+
+### Noninformative Prior: Jeffery's Prior
+
+The format is `$$\pi(\theta) \propto |I(\theta)|^{1/2}$$` where `\(I(\theta)\)` is Fisher's expected information.
+
+
+- it has the desirable property of invariance of reparameterization, regardless of the univaraite or multivariate setting.
+
+- however, it may lead to the posterior with undesirable characteristics.
+  - like the Neyman-Scott problem in our homework, the use of Jeffery prior gives, as `\(n \to \infty\)`, a limiting posterior mean is inconsistent.
+  
+
+
+---
+
+### Noninformative Prior: Reference Prior
+
+
+the idea of reference prior is to maximize the expected Kullback–Leibler divergence of the posterior distribution relative to the prior. 
+
+This maximizes the expected posterior information about X when the prior density is p(x); thus, in some sense, p(x) is the "least informative" prior about X. 
+
+The reference prior is defined in the asymptotic limit, i.e., one considers the limit of the priors so obtained as the number of data points goes to infinity. In the present case, the KL divergence between the prior and posterior distributions is given by
+
+`$$KL = \int p(t) \int p(x|t) log \frac{p(x|t)}{p(x)} dx dt$$`
+
+Here, `\(t\)` is a sufficient statistic for some parameter `\(x\)`. The inner integral is the KL divergence between the posterior `\(p(x|t)\)` and prior `\(p(x)\)` distributions and the result is the weighted mean over all values of `\(t\)`
+
+
+
+
+- Reference priors are often the objective prior of choice in multivariate problems, since other rules (e.g., Jeffreys' rule) may result in priors with problematic behavior.
+
+
+
+???
+
+A related idea, reference priors, was introduced by José-Miguel Bernardo.
+
+Here, the idea is to maximize the expected Kullback–Leibler divergence of the posterior distribution relative to the prior. This maximizes the expected posterior information about X when the prior density is p(x); thus, in some sense, p(x) is the "least informative" prior about X.
+
+---
+
+### Noninformative Prior: MAXENT Prior
+
+Another idea is to use the principle of maximum entropy (MAXENT).
+
+The motivation is that the Shannon entropy of a probability distribution measures the amount of information contained in the distribution. 
+
+The larger the entropy, the less information is provided by the distribution. Thus, by maximizing the entropy over a suitable set of probability distributions on X, one finds the distribution that is least informative in the sense that it contains the least amount of information consistent with the constraints that define the set. 
+
+&gt; For example, the maximum entropy prior on a discrete space, given only that the probability is normalized to 1, is the prior that **assigns equal probability to each state**. And in the continuous case, the maximum entropy prior given that the density is normalized with mean zero and unit variance is the **standard normal distribution** `\(N(0, 1)\)`.
+
+---
+
+
+
+# Weakly Informative Prior
+
+
+- it expresses partial information about a parameter.
+
+- its main purpose is for regularization, that is, to keep inferences in a reasonable range. It overcomes the possibility for weird values in flat Prior setting.
+&lt;br/&gt;&lt;br/&gt;
+
+&gt; Example: Setting the prior distribution for the temperature at noon tomorrow
+
+&gt; We may use a normal distribution with mean 50 degrees Fahrenheit and standard deviation 40 degrees, which very loosely constrains the temperature to the range (10 degrees, 90 degrees) with a small chance of being below -30 degrees or above 130 degrees.
+
+---
+
+# Informative Prior
+
+- it is also called as **subjective/substantive** prior.
+
+- it expresses specific, definite information about a variable. 
+
+- it needs our clear understanding of the of-interest parameters. Sometimes, reparameterization is required.
+
+&lt;br/&gt;&lt;br/&gt;
+&gt; An example is a prior distribution for the temperature at noon tomorrow. 
+A reasonable approach is to make the prior a normal distribution with expected value equal to today's noontime temperature, with variance equal to the day-to-day variance of atmospheric temperature, or a distribution of the temperature for that day of the year.
+
+---
+
+# Conjugate Prior
+
+if the posterior distributions `\(p(\theta | x)\)` are in the same probability distribution family as the prior probability distribution `\(p(\theta )\)`, the prior and posterior are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function `\(p( x | \theta )\)`.
+
+- computation convenient.
+
+- can be used in both objective and subjective prior settings.
+  - `\(N(0, 10000)\)`
+  - `\(N(0.4, 0.2)\)`
+  
 
 ---
 
@@ -118,36 +286,42 @@ In our parameterization, noninformative prior distributions on the parameters `\
 If noninformative prior distributions were assigned to all the individual parameters, then the model would fit the data very closely but with
 scientifically unreasonable parameters – for example, a person with a liver weighing as value `\(10\)`. This sort of difficulty is what motivates a researcher to specify a prior distribution using external information.
 
----
 
-# Theory
 
-Most of the theoretical work on prior distributions has been on two topics:
-
-- first, determining the conditions that must be satisfied by the prior and data distributions so that the posterior distribution is well behaved; 
-
-- second, setting up rules for noninformative prior distributions that satisfy various invariance principles.
-
-These strands of research are related, in that prior distributions set up based on invariance rules alone will make sense only if they lead to reasonable posterior distributions.
 
 
 ---
-# Theory
 
-Perhaps the most well known theoretical result is that, for variance parameters in a linear regression model, the uniform prior distribution for `\(\log(\sigma)\)` is acceptable when applied to the lowest level variance component but not acceptable for higher level variance components. i.e. `\(\log \sigma \propto 1\)` and `\(\tau \propto 1\)` for proper posterior.
+### Hierarchical: the parameters of the prior
+
+Parameters of prior distributions are a kind of **hyperparameter**. For example, if one uses a beta distribution to model the distribution of the parameter `\(p\)` of a Bernoulli distribution, then:
+
+- `\(p\)` is a parameter of the underlying system (Bernoulli distribution), and
+- `\(\alpha\)` and `\(\beta\)` are parameters of the prior distribution (beta distribution); hence hyperparameters.
+
+Hyperparameters themselves may have hyperprior distributions expressing beliefs about their values. 
+
+A Bayesian model with more than one level of prior like this is called a hierarchical Bayes model.
+
+Pros:
+ - more degree of freedom
+ - model the dependence among parameters
+ 
+---
+### Hierarchical: the parameters of the prior
+
+#### Note:
+
+When things go to hierarchical model, some cares are needed. 
+
+For example, perhaps the most well known theoretical result is that, for variance parameters in a linear regression model, the uniform prior distribution for `\(\log(\sigma)\)` is acceptable when applied to the lowest level variance component but not acceptable for higher level variance components. i.e. `\(\log \sigma \propto 1\)` and `\(\tau \propto 1\)` for proper posterior.
 
 These theoretical results do not give **recommended** models, but rather are useful in **ruling out** certain natural seeming models with poor statistical properties.
 
 
----
-# Summary
-
-Conversely, one might seek to avoid theoretical considerations entirely and simply pick a ‘subjective’ prior distribution that best represents one’s scientific knowledge about the set of uncertain parameters in the problem. 
-
-In practice, however, subjective knowledge is hard to specify precisely, and so it is important to study the sensitivity of posterior inferences. In many problems, the key issue in setting up the prior distribution is the specification of the model into parameters that can be clustered hierarchically.
 
 ---
-# Priors can be created using a number of methods.
+### Summary: Priors can be created using a number of methods.
 
 - A prior can be determined from past information, such as previous experiments.
 
@@ -160,71 +334,35 @@ In practice, however, subjective knowledge is hard to specify precisely, and so 
 - When a family of conjugate priors exists, choosing a prior from that family simplifies calculation of the posterior distribution.
 
 ---
-# Five Levels of Priors
+### Five Levels of Priors
 
---
+- Flat prior;
 
-- Flat prior (not usually recommended);
-
---
-
-- Super-vague but proper prior: `\(N(0, 1e6)\)` (not usually recommended);
-
---
+- Super-vague but proper prior: `\(N(0, 1e6)\)`;
 
 - Weakly informative prior, very weak: `\(N(0, 10)\)`;
 
---
-
 - Generic weakly informative prior: `\(N(0, 1)\)`;
-
---
 
 - Specific informative prior: `\(N(0.4, 0.2)\)` or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: `\(\theta = 0.4 + 0.2*z\)`; `\(z \sim N(0, 1)\)`;
 
 ---
-
-# Parameter of Prior Distribution
-
-Parameters of prior distributions are a kind of **hyperparameter**. For example, if one uses a beta distribution to model the distribution of the parameter `\(p\)` of a Bernoulli distribution, then:
-
-- `\(p\)` is a parameter of the underlying system (Bernoulli distribution), and
-- `\(\alpha\)` and `\(\beta\)` are parameters of the prior distribution (beta distribution); hence hyperparameters.
-
-Hyperparameters themselves may have hyperprior distributions expressing beliefs about their values. 
-
-A Bayesian model with more than one level of prior like this is called a hierarchical Bayes model.
-
-
----
-
-# Informative priors
-
-#### An **informative prior** expresses specific, definite information about a variable. 
-
-An example is a prior distribution for the temperature at noon tomorrow. 
-
-A reasonable approach is to make the prior a normal distribution with expected value equal to today's noontime temperature, with variance equal to the day-to-day variance of atmospheric temperature, or a distribution of the temperature for that day of the year.
----
-
-# Weakly informative priors
-
-A weakly informative prior expresses partial information about a variable. An example is, when setting the prior distribution for the temperature at noon tomorrow in St. Louis, to use a normal distribution with mean 50 degrees Fahrenheit and standard deviation 40 degrees, which very loosely constrains the temperature to the range (10 degrees, 90 degrees) with a small chance of being below -30 degrees or above 130 degrees. The purpose of a weakly informative prior is for regularization, that is, to keep inferences in a reasonable range.
-
----
-
-# Uninformative priors
-
-#### An uninformative prior or diffuse prior expresses vague or general information about a variable. The term "uninformative prior" is somewhat of a misnomer. Such a prior might also be called a not very informative prior, or an objective prior, i.e. one that's not subjectively elicited.
-
-Uninformative priors can express "objective" information such as "the variable is positive" or "the variable is less than some limit". The simplest and oldest rule for determining a non-informative prior is the principle of indifference, which assigns equal probabilities to all possibilities. In parameter estimation problems, the use of an uninformative prior typically yields results which are not too different from conventional statistical analysis, as the likelihood function often yields more information than the uninformative prior.
-
----
 # Reference
-- [Prior distribution Andrew Gelman](http://www.stat.columbia.edu/~gelman/research/published/p039-_o.pdf)
+
+- Andrew Gelman, BDA3
+
+- [Andrew Gelman, Prior distribution](http://www.stat.columbia.edu/~gelman/research/published/p039-_o.pdf)
 
 
+- [Andrew Gelman, Prior Choice Recommendations](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations)
 
+- [Surya Tokdar, Choosing a Prior Distribution ](https://www2.stat.duke.edu/courses/Spring13/sta732.01/priors.pdf)
+
+- Jon Wakefield, Bayesian and Frequentist Regression Methods
+
+- [Documentation of stan software, GitHub](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations)
+
+- [Wikipedia: Prior probability](https://en.wikipedia.org/wiki/Prior_probability#Uninformative_priors)
 
 ---
 
