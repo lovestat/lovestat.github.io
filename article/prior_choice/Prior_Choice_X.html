@@ -268,8 +268,9 @@ For example, parameter 8 represents the mass of the liver as a fraction of lean 
 
 
 
-The prior distribution for `\(\log \theta_{k,8}\)` (for persons k = 1,..., 6) is assumed as 
-`\(N(\mu_8, \Sigma_8^2)\)`. 
+The prior distribution for 
+
+- `\(\log \theta_{k,8}\)` `\(\sim\)` `\(N(\mu_8, \Sigma_8^2)\)`. (for persons k = 1,..., 6) 
 
 - `\(\mu_8 \sim N(\log0.033, \log1.1)\)`, 
 
@@ -286,11 +287,11 @@ For example, in this particular study, parameter 14 represents the maximum rate 
 
 This information is encoded in a *hierarchical prior distribution*: 
 
-- `\(\log \theta_{k, 14} \sim N(\mu_{14}, \Sigma_{14})\)` 
+- `\(\log \theta_{k, 14} \sim N(\mu_{14}, \Sigma_{14}^2)\)` 
 
-- `\(\mu_{14} \sim N(\log(0.042), \log^2(10))\)` 
+- `\(\mu_{14} \sim N(\log0.042, \log^210)\)` 
 
-- `\(\Sigma_{14} \sim Inv \chi^2 (2, \log^2(2))\)`
+- `\(\Sigma_{14} \sim Inv \chi^2 (2, \log^22)\)`
 
 
 ---
