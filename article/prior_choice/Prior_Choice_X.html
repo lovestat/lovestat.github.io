@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 
 
 
-## What is Prior Distribution
+### What is Prior Distribution
 
 
 The prior distribution is a key part of Bayesian inference and represents the information about an uncertain parameter `\(\theta\)` that is combined with the probability distribution of new data to yield the **posterior distribution**, which in turn is used for future inferences and decisions involving `\(\theta\)`.
@@ -39,7 +39,7 @@ $$
 
 
 
-## Why the Prior Distribution is important
+### Why the Prior Distribution is important
 
 - Unreasonable prior may cause improper posterior distribution.
 
@@ -62,7 +62,7 @@ The next is the reason why the prior distribution is important?
 
 ---
 
-## Issue to Think for the Prior Choice
+### Issue to Think for the Prior Choice
 
 
 1. What information is going into the prior distribution.
@@ -82,7 +82,7 @@ class: inverse, middle, center
 # The Types of The Prior Distribution
 
 ---
-# Noninformative Prior
+### Noninformative Prior
 
 - It is also called as **diffuse/default/low-informative/uniform/objective** prior 
 
@@ -99,7 +99,7 @@ class: inverse, middle, center
 - it may cause unexpected parameter value. (like tomorrow's temperature could be 100 degree with small probability)
 ---
 
-## Noninformative Prior: Flat Prior
+### Noninformative Prior: Flat Prior
 
 A **flat prior** is a uniform prior on the parameter: `\(f(θ)\)` is constant or written as `\(f(θ) \propto 1\)`
 
@@ -114,7 +114,7 @@ A **flat prior** is a uniform prior on the parameter: `\(f(θ)\)` is constant or
 
 ---
 
-## Example
+### Example
 Suppose that `\(Y_1, . . . , Y_n\)` are from  ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) ≡ 1\)`.
 
 
@@ -190,7 +190,7 @@ The larger the entropy, the less information is provided by the distribution. Th
 
 
 
-# Weakly Informative Prior
+### Weakly Informative Prior
 
 
 - it expresses partial information about a parameter.
@@ -204,7 +204,7 @@ The larger the entropy, the less information is provided by the distribution. Th
 
 ---
 
-# Informative Prior
+### Informative Prior
 
 - it is also called as **subjective/substantive** prior.
 
@@ -219,7 +219,7 @@ The larger the entropy, the less information is provided by the distribution. Th
 
 ---
 
-# Conjugate Prior
+### Conjugate Prior
 
 if the posterior distributions `\(p(\theta | x)\)` are in the same probability distribution family as the prior probability distribution `\(p(\theta )\)`, the prior and posterior are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function `\(p( x | \theta )\)`.
 
@@ -232,7 +232,7 @@ if the posterior distributions `\(p(\theta | x)\)` are in the same probability d
 
 ---
 
-# Example: pharmacokinetics
+### Example: pharmacokinetics
 
 We illustrate with an example from a model in pharmacokinetics, the study of the absorption, distribution, and elimination of drugs from the body. 
 
@@ -251,7 +251,7 @@ now discuss.
 
 ---
 
-## Noninformative Prior Distributions
+### Noninformative Prior Distributions
 
 We first consider the variance parameters `\(\sigma_1^2\)` and `\(\sigma^2_2\)`, a noninformative uniform prior distribution works fine. 
 
@@ -260,7 +260,7 @@ the data likelihood it yields an acceptable proper posterior distribution.
 
 ---
 
-## Highly Informative Prior Distributions
+### Highly Informative Prior Distributions
 
 At the other extreme, fairly precise scientific information is available on some of the parameters `\(\theta_{kl}\)` in the model. 
 
@@ -278,7 +278,7 @@ The prior distribution for `\(\log \theta_{k,8}\)` (for persons k = 1,..., 6) is
 This setup sets the parameters `\(\theta_{k,8}\)` approximately to their prior estimate, 0.033, with relatively small variation allowed between persons.
 
 ---
-## Moderately Informative Hierarchical Prior Distributions
+### Moderately Informative Hierarchical Prior Distributions
 
 Finally, some of the parameters `\(\theta_{kl}\)` are not well estimated by the data – thus, they require informative prior distributions – but scientific information on them is limited.
 
