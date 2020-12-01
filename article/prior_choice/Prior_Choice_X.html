@@ -43,10 +43,10 @@ $$
 
 - Unreasonable prior may cause improper posterior distribution.
 
-- For all `\(\theta\)` for which `\(\pi(\theta) = 0\)`, we necessarily have `\(p(\theta | y) = 0\)`. If the prior does not contain all range of the parameter space, the posterior will not consider the excluding part.
+- For all `\(\theta\)` for which `\(\pi(\theta) = 0\)`, we necessarily have `\(p(\theta | y) = 0\)`. If the prior does not contain all range of the parameter, the posterior will not consider the excluding part.
 
-- If the sample size is small, the prior distribution is very important. The posterior distribution will utilize the information from prior considerably.
-    - although large sample sizes, reasonable choices of prior distributions will have minor effects on posterior inferences. 
+- If the sample size is small, the posterior distribution will utilize the information from the prior distribution considerably.
+    - although the larger the sample size is, the smaller the effect is. 
 
 
 ???
@@ -72,8 +72,8 @@ The next is the reason why the prior distribution is important?
 &lt;br/&gt;&lt;br/&gt;
 2. The properties of the resulting posterior distribution.
 
-  - proper or improper;
-  - closed form or not, although can be overcome by MCMC algorithm.
+  - whether the posterior is proper or not proper;
+  - whether the posterior is closed-form or not, although this can be overcome by MCMC algorithm.
   
 ---
 
@@ -115,7 +115,7 @@ A **flat prior** is a uniform prior on the parameter: `\(f(θ)\)` is constant or
 ---
 
 ## Example
-Suppose that `\(Y_1, . . . , Y_n\)` are form ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) ≡ 1\)`.
+Suppose that `\(Y_1, . . . , Y_n\)` are from  ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) ≡ 1\)`.
 
 
 Of course this prior is not a probability distribution, but it turns
@@ -138,8 +138,8 @@ The format is `$$\pi(\theta) \propto |I(\theta)|^{1/2}$$` where `\(I(\theta)\)` 
 
 - it has the desirable property of invariance of reparameterization, regardless of the univaraite or multivariate setting.
 
-- however, it may lead to the posterior with undesirable characteristics.
-  - like the Neyman-Scott problem in our homework, the use of Jeffery prior gives, as `\(n \to \infty\)`, a limiting posterior mean is inconsistent.
+- however, it may lead to the posterior with undesirable characteristics in multivariate case.
+  - like the Neyman-Scott problem in our homework, the use of Jeffery prior gives, as `\(n \to \infty\)`, a limiting posterior mean , `\(\sigma^2\)`, is inconsistent.
   
 
 
@@ -148,11 +148,11 @@ The format is `$$\pi(\theta) \propto |I(\theta)|^{1/2}$$` where `\(I(\theta)\)` 
 ### Noninformative Prior: Reference Prior
 
 
-the idea of reference prior is to maximize the expected Kullback–Leibler divergence of the posterior distribution relative to the prior. 
+The idea of the **reference prior** is to maximize the expected Kullback–Leibler divergence of the posterior distribution relative to the prior. 
 
 This maximizes the expected posterior information about X when the prior density is p(x); thus, in some sense, p(x) is the "least informative" prior about X. 
 
-The reference prior is defined in the asymptotic limit, i.e., one considers the limit of the priors so obtained as the number of data points goes to infinity. In the present case, the KL divergence between the prior and posterior distributions is given by
+The KL divergence between the prior and posterior distributions is given by
 
 `$$KL = \int p(t) \int p(x|t) log \frac{p(x|t)}{p(x)} dx dt$$`
 
@@ -161,7 +161,7 @@ Here, `\(t\)` is a sufficient statistic for some parameter `\(x\)`. The inner in
 
 
 
-- Reference priors are often the objective prior of choice in multivariate problems, since other rules (e.g., Jeffreys' rule) may result in priors with problematic behavior.
+Reference priors are often the objective prior of choice in multivariate problems, since other rules (e.g., Jeffreys' rule) may result in priors with problematic behavior.
 
 
 
@@ -180,8 +180,11 @@ Another idea is to use the principle of maximum entropy (MAXENT).
 The motivation is that the Shannon entropy of a probability distribution measures the amount of information contained in the distribution. 
 
 The larger the entropy, the less information is provided by the distribution. Thus, by maximizing the entropy over a suitable set of probability distributions on X, one finds the distribution that is least informative in the sense that it contains the least amount of information consistent with the constraints that define the set. 
+&lt;br/&gt;&lt;br/&gt;
 
-&gt; For example, the maximum entropy prior on a discrete space, given only that the probability is normalized to 1, is the prior that **assigns equal probability to each state**. And in the continuous case, the maximum entropy prior given that the density is normalized with mean zero and unit variance is the **standard normal distribution** `\(N(0, 1)\)`.
+&gt; For example, the maximum entropy prior on a discrete space, given only that the probability is normalized to 1, is the prior that **assigns equal probability to each state**. 
+
+&gt;And in the continuous case, the maximum entropy prior given that the density is normalized with mean zero and unit variance is the **standard normal distribution** `\(N(0, 1)\)`.
 
 ---
 
@@ -211,7 +214,8 @@ The larger the entropy, the less information is provided by the distribution. Th
 
 &lt;br/&gt;&lt;br/&gt;
 &gt; An example is a prior distribution for the temperature at noon tomorrow. 
-A reasonable approach is to make the prior a normal distribution with expected value equal to today's noontime temperature, with variance equal to the day-to-day variance of atmospheric temperature, or a distribution of the temperature for that day of the year.
+
+&gt; A reasonable approach is to make the prior a normal distribution with expected value equal to today's noontime temperature, with variance equal to the day-to-day variance of atmospheric temperature, or a distribution of the temperature for that day of the year.
 
 ---
 
@@ -219,7 +223,7 @@ A reasonable approach is to make the prior a normal distribution with expected v
 
 if the posterior distributions `\(p(\theta | x)\)` are in the same probability distribution family as the prior probability distribution `\(p(\theta )\)`, the prior and posterior are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function `\(p( x | \theta )\)`.
 
-- computation convenient.
+- computational convenience
 
 - can be used in both objective and subjective prior settings.
   - `\(N(0, 10000)\)`
@@ -247,18 +251,16 @@ now discuss.
 
 ---
 
-# Noninformative Prior Distributions
+## Noninformative Prior Distributions
 
-We first consider the variance parameters `\(\sigma_1^2\)` and `\(\sigma^2_2\)`, which are actually quite well identified in the posterior distribution. For these, a noninformative uniform prior distribution works fine. (A uniform distribution on the log standard deviations was used, but enough information was available from the data that the choice of noninformative prior distribution was essentially irrelevant, and one could just as well have assigned a uniform prior distribution on the variances or the standard deviations.)
+We first consider the variance parameters `\(\sigma_1^2\)` and `\(\sigma^2_2\)`, a noninformative uniform prior distribution works fine. 
 
-The uniform prior distribution here is improper – that is, the function used
-as a ‘prior probability density’ has an infinite integral
-and is thus not, strictly speaking, a probability density at all. However, when formally combined with
+The uniform prior distribution here is improper. However, when formally combined with
 the data likelihood it yields an acceptable proper posterior distribution.
 
 ---
 
-# Highly Informative Prior Distributions
+## Highly Informative Prior Distributions
 
 At the other extreme, fairly precise scientific information is available on some of the parameters `\(\theta_{kl}\)` in the model. 
 
@@ -266,15 +268,29 @@ For example, parameter 8 represents the mass of the liver as a fraction of lean 
 
 
 
-The prior distribution for `\(\log \theta_{k,8}\)` (for persons k = 1,..., 6) is assumed normal with mean `\(\mu_8\)` and standard deviation `\(\Sigma_8\)`; `\(\mu_8\)` was given a normal prior distribution with mean `\(\log(0.033)\)` and standard deviation `\(\log1.1\)`, and `\(\Sigma_8\)` was given an inverse `\(\chi^2\)` prior distribution with scale `\(\log(1.1)\)` and two degrees of freedom. This setup sets the parameters `\(\theta_{k,8}\)` approximately to their prior estimate, 0.033, with some variation allowed between persons.
+The prior distribution for `\(\log \theta_{k,8}\)` (for persons k = 1,..., 6) is assumed as 
+`\(N(\mu_8, \Sigma_8^2)\)`. 
+
+- `\(\mu_8 \sim N(\log0.033, \log1.1)\)`, 
+
+- `\(\Sigma_8 \sim Inv \chi^2 (2, \log 1.1)\)` 
+
+This setup sets the parameters `\(\theta_{k,8}\)` approximately to their prior estimate, 0.033, with relatively small variation allowed between persons.
 
 ---
 ## Moderately Informative Hierarchical Prior Distributions
 
-Finally, some of the physiological parameters `\(\theta_{kl}\)` are not well estimated by the data – thus, they require informative prior distributions – but scientific information on them is limited.
+Finally, some of the parameters `\(\theta_{kl}\)` are not well estimated by the data – thus, they require informative prior distributions – but scientific information on them is limited.
 
-For example, in this particular study, parameter 14 represents the maximum rate of metabolism of a certain compound; the best available estimate of this parameter for healthy humans is 0.042, but this estimate is quite crude
-and could easily be off by a factor of 10 or 100. The maximum rate of metabolism is not expected to vary greatly between persons, but there is much uncertainty about the numerical value of the parameter. This information is encoded in a *hierarchical prior distribution*: `\(\log \theta_{k, 14} \sim N(\mu_{14}, \Sigma_{14})\)` with `\(\mu_{14} \sim N(\log(0.042), \log^2(10))\)` and `\(\Sigma_{14} \sim Inv \chi^2 (2, \log^2(2))\)`
+For example, in this particular study, parameter 14 represents the maximum rate of metabolism of a certain compound; the best available estimate of this parameter for healthy humans is 0.042, but this estimate is quite crude and could easily be off by a factor of 10 or 100. The maximum rate of metabolism is not expected to vary greatly between persons, but there is much uncertainty about the numerical value of the parameter. 
+
+This information is encoded in a *hierarchical prior distribution*: 
+
+- `\(\log \theta_{k, 14} \sim N(\mu_{14}, \Sigma_{14})\)` 
+
+- `\(\mu_{14} \sim N(\log(0.042), \log^2(10))\)` 
+
+- `\(\Sigma_{14} \sim Inv \chi^2 (2, \log^2(2))\)`
 
 
 ---
@@ -294,23 +310,13 @@ scientifically unreasonable parameters – for example, a person with a liver we
 
 ### Hierarchical: the parameters of the prior
 
-Parameters of prior distributions are a kind of **hyperparameter**. For example, if one uses a beta distribution to model the distribution of the parameter `\(p\)` of a Bernoulli distribution, then:
 
-- `\(p\)` is a parameter of the underlying system (Bernoulli distribution), and
-- `\(\alpha\)` and `\(\beta\)` are parameters of the prior distribution (beta distribution); hence hyperparameters.
 
-Hyperparameters themselves may have hyperprior distributions expressing beliefs about their values. 
-
-A Bayesian model with more than one level of prior like this is called a hierarchical Bayes model.
-
-Pros:
+Sometimes we have to set up hyperparameters for the model for 
  - more degree of freedom
  - model the dependence among parameters
  
----
-### Hierarchical: the parameters of the prior
-
-#### Note:
+Hyperparameters themselves may have hyperprior distributions expressing beliefs about their values. 
 
 When things go to hierarchical model, some cares are needed. 
 
@@ -318,7 +324,10 @@ For example, perhaps the most well known theoretical result is that, for varianc
 
 These theoretical results do not give **recommended** models, but rather are useful in **ruling out** certain natural seeming models with poor statistical properties.
 
+---
+### Rule of Thumb
 
+- [Documentation of stan software, GitHub](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations)
 
 ---
 ### Summary: Priors can be created using a number of methods.
