@@ -115,7 +115,7 @@ A **flat prior** is a uniform prior on the parameter: `\(f(θ)\)` is constant or
 ---
 
 ### Example
-Suppose that `\(Y_1, . . . , Y_n\)` are from  ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) ≡ 1\)`.
+Suppose that `\(Y_1, . . . , Y_n\)` are from  ** i.i.d.** `\(N(\mu, 1)\)`, we use a “prior” `\(f(\mu) = 1\)`.
 
 
 Of course this prior is not a probability distribution, but it turns
@@ -150,13 +150,13 @@ The format is `$$\pi(\theta) \propto |I(\theta)|^{1/2}$$` where `\(I(\theta)\)` 
 
 The idea of the **reference prior** is to maximize the expected Kullback–Leibler divergence of the posterior distribution relative to the prior. 
 
-This maximizes the expected posterior information about X when the prior density is p(x); thus, in some sense, p(x) is the "least informative" prior about X. 
+This maximizes the expected posterior information about `\(\theta\)` when the prior density is `\(p(\theta)\)`; thus, in some sense, p(x) is the "least informative" prior about `\(\theta\)`. 
 
 The KL divergence between the prior and posterior distributions is given by
 
-`$$KL = \int p(t) \int p(x|t) log \frac{p(x|t)}{p(x)} dx dt$$`
+`$$KL = \int p(t) \int p(\theta|t) log \frac{p(\theta|t)}{p(\theta)} d\theta dt$$`
 
-Here, `\(t\)` is a sufficient statistic for some parameter `\(x\)`. The inner integral is the KL divergence between the posterior `\(p(x|t)\)` and prior `\(p(x)\)` distributions and the result is the weighted mean over all values of `\(t\)`
+Here, `\(t\)` is a sufficient statistic for some parameter `\(\theta\)`. The inner integral is the KL divergence between the posterior `\(p(\theta|t)\)` and prior `\(p(\theta)\)` distributions and the result is the weighted mean over all values of `\(t\)`
 
 
 
@@ -179,7 +179,7 @@ Another idea is to use the principle of maximum entropy (MAXENT).
 
 The motivation is that the Shannon entropy of a probability distribution measures the amount of information contained in the distribution. 
 
-The larger the entropy, the less information is provided by the distribution. Thus, by maximizing the entropy over a suitable set of probability distributions on X, one finds the distribution that is least informative in the sense that it contains the least amount of information consistent with the constraints that define the set. 
+The larger the entropy, the less information is provided by the distribution. Thus, by maximizing the entropy over a suitable set of probability distributions on `\(\theta\)`, one finds the distribution that is least informative in the sense that it contains the least amount of information consistent with the constraints that define the set. 
 &lt;br/&gt;&lt;br/&gt;
 
 &gt; For example, the maximum entropy prior on a discrete space, given only that the probability is normalized to 1, is the prior that **assigns equal probability to each state**. 
