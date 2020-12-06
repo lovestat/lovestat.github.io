@@ -1,0 +1,90 @@
+---
+title: "HiPerGator Commands"
+output:
+  html_notebook:
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    theme: united
+  html_document:
+    toc: yes
+    df_print: paged
+---
+
+# Commands usually used in HiPerGator
+
+- `squeue -A [accoundname]` Show jobs of an account
+- `sbatch *.slurm` Submit a job
+- `dos2unix *.slurm` Convert windows slurm to unix slurm
+- `showAssoc [username]` Show the affiliation of the username
+- `showQos [QOSname]`
+- `slurmInfo -g [groupname]` Show the information of the group
+- `sacctmgr list qos *` Check max cores, memory of the group
+
+*** 
+
+# HPC Slurm
+
+## Parallel Categories
+
+Applications can be paralleled in different ways, knowing which method was used for your
+application is critical.
+
+Common categories of parallelization:
+
+- Single Computer with one/multiple cores: OpenMP, **Threaded**, Pthreads
+  - All cores on one physical node, shared memory
+  
+- Multiple Computers with one/multiple cores: **MPI** (Message Passing Interface)
+  - Can use multiple nodes (cross-machine)
+  
+## Threaded Jobs
+
+For threaded applications, all cores need to be on a single node. And using R, we may only need to set 1 node, 1 task and multiple cores (cpus-per-task option in slurm) to run the parallel jobs.
+
+For example,
+```{bash}
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+```
+This would request 1 node (physical computer in HiPerGator) with 1 task and 8 cores for that task—so 8 cores all together for the application to use.
+  
+***
+
+
+## Slurm Options
+
+- `--nodes` **If you are not using MPI, just set it to 1.** One node represents a single real computer in the HPC: A lot of times jobs will be submitted to a single node. For example, in 2018 year, HiPerGator added 32 Dell C6420 Nodes (Computers) which has 2 sockets, 32 Cores and 192GB RAM. It means one node will have 2 * 32 = 64 cores. 
+
+  - `socket` is a hardware on the motherboard which accepts the CPU for its mounting on the motherboard. The Socket thereby connects the CPU with the motherboard circuitry. One socket accepts exactly one CPU so that socket is referring to a physical CPU.
+  
+
+
+- `--ntasks` **If you are not using MPI, just set it to 1.** Specifies how many instances of your command are executed. See [here](https://stackoverflow.com/questions/39186698/what-does-the-ntasks-or-n-tasks-does-in-slurm) for details. "For a common cluster setup and if you start your command with "srun" this corresponds to the number of MPI ranks. In contrast the option "--cpus-per-task" specify how many CPUs each task can use."
+  - [Difference between `srun` and `sbatch`](https://stackoverflow.com/questions/43767866/slurm-srun-vs-sbatch-and-their-parameters)
+
+- `--cpus-per-task` **USE THIS FOR SPECIFYING THE NUMBER of CORES in ONE CLUSETER!** generally this refers to core or thread do you want to use in task. And this is the relevant option when using things like OpenMP or functions that allow creating cluster objects in R (e.g. `makeCluster()`). 
+
+
+- `--partition` A partition represents a group of nodes in HPC. Generally large nodes may have multiple partitions, meaning that nodes may be grouped in various ways. For example, nodes belonging to a single group of users may be in a single partition, nodes dedicated to work with large data may be in another partition. Usually, partitions are associated with account privileges, so users may need to specify which account are they using when telling Slurm what partition they plan to use.
+
+- `--account` Accounts may be associated with partitions. Accounts can have privileges to use a partition or set of nodes. Often, users need to specify the account when submitting jobs to a particular partition.
+
+- `--array` Slurm supports job arrays. A job array is in simple terms a job that is repeated multiple times by Slurm, this is, replicates a single job as requested per the user. In the case of R, when using this option, a single R script is spanned in multiple jobs, so the user can take advantage of this and parallelize jobs across multiple nodes. Besides from the fact that jobs within a Job Array may be spanned across multiple nodes, each job in that array has a unique ID that is available to the user via environment variables, in particular `SLURM_ARRAY_TASK_ID`. 
+
+  - Within R, and hence the Rscript submitted to Slurm, users can access this environment variable with Sys.getenv("SLURM_ARRAY_TASK_ID"). Some of the functionalities of slurmR rely on Job Arrays. More information on Job Arrays can be found [here](https://slurm.schedmd.com/job_array.html).
+
+  - More information regarding CPUs in Slurm can be found [here](https://slurm.schedmd.com/cpu_management.html). Information regarding how Slurm counts CPUs/cores/threads can be found [here](https://slurm.schedmd.com/faq.html#cpu_count).
+
+
+
+# Reference
+
+- [slurmR/working-with-slurm](https://cran.r-project.org/web/packages/slurmR/vignettes/working-with-slurm.html)
+- https://sciwiki.fredhutch.org/scicomputing/compute_parallel/
+
+- [Biomedical Data Science Wiki: Parallel Computing on Slurm Clusters](https://sciwiki.fredhutch.org/scicomputing/compute_parallel/)
+
+- [UF HPC](https://training.it.ufl.edu/media/trainingitufledu/documents/research-computing/Slurm-MPI-jobs.pdf)
+
