@@ -1,0 +1,208 @@
+---
+title: "seecolor: View Colors Used in R Objects in the Console"
+author: "Shangchen Song, Xinyu Yan"
+date: "12/6/2020"
+output: 
+  html_document:
+    number_sections: TRUE
+    toc: TRUE
+    toc_float: TRUE
+    theme: united
+    highlight: tango
+---
+
+
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 12pt;
+}
+h1,h2,h3,h4,h5,h6{
+  font-family: Helvetica;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(seecolor)
+library(tidyverse)
+library(fansi)
+library(crayon)
+old.hooks <- fansi::set_knit_hooks(knitr::knit_hooks)
+options(crayon.enabled=TRUE)
+```
+
+<!-- badges: start -->
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/seecolor?color=green)](https://cran.r-project.org/package=seecolor)
+![Build Status](https://travis-ci.com/lovestat/seecolor.svg?branch=master)
+[![R build status](https://github.com/lovestat/seecolor/workflows/R-CMD-check/badge.svg)](https://github.com/lovestat/seecolor/actions)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- badges: end -->
+
+# Introduction 
+
+<img src="https://raw.githubusercontent.com/lovestat/seecolor/master/man/figures/logo.png" align="right" width="120">
+
+
+## Motivation
+
+Data visualization is an essential part of communicating scientific findings in biostatistics and data science. Plots with appropriate colors better represent the data and are easier to read. 
+
+However, to select an appropriate color is not always an easy topic. Although many packages offer palettes and automatic colors filling, users may want to have a way to preview the colors immediately. 
+
+Thus, the issue is what our package [{seecolor}](http://shangchen.org/seecolor) is able to solve. For instance, 
+
+```{r}
+## Preview colors using seecolor package
+seecolor::print_color(c("cyan", "#0000FF", "yellow"), type = "r")
+```
+
+## Overview
+
+In `r fontawesome::fa("r-project", fill = "red")`, colors may be specified either 
+
+- by name (e.g. "blue")
+- by hexadecimal code (e.g. "#FF1234"), 
+- by a palette (e.g. offered in the `viridis`, `RColorBrewer` and `ggsci` packages.) 
+- by being contained in a plot object. 
+
+To this end, our `seecolor` package provides corresponding ways visualizing colors used in a `literals`, a `palette`, or a `ggplot2` object in the console. Specifically, 
+
+- users may use `pick_color()` to interactively preview the colors 
+- and use `print_color()` to print the colors programmingly.
+
+## Installation
+
+`seecolor` is now available on CRAN as version 0.1.0. You may want to access 
+
+- the Package page  [`r fontawesome::fa("home", fill = "red")`](http://shangchen.org/seecolor)   
+- the CRAN page  [`r fontawesome::fa("r-project", fill = "red")`](https://cran.r-project.org/web/packages/seecolor/index.html) 
+- the Github page  [`r fontawesome::fa("github", fill = "red")`](https://github.com/lovestat/seecolor).
+- the vignettes [`r fontawesome::fa("vine", fill = "red")`](https://shangchen.org/seecolor/articles/Intro-to-seecolor-package.html). 
+
+Code below can be used to install the package.
+
+```{r, eval = F}
+# install from CRAN
+install.packages("seecolor")
+
+# install from GitHub
+devtools::install_github("lovestat/seecolor")
+
+# load package
+library(seecolor)
+```
+
+
+
+# Methods 
+
+The package is designed to detect color literals and hexadecimal color codes, as well as colors used in a `ggplot` object. Under the hood, the package uses the feature of the ASCII colorful codes to make print colors in console possible. The origin functionality is implemented by the package {crayon}. 
+
+Since detecting strings are required, we utilized much on regular expression which is offered by package {stringr}.
+
+The `pick_color` function invokes an interactive mode in RStudio. When the function is executed and running, use the cursor to highlight a text in an R or RMD file. If the highlighted text is a command to create a `ggplot` object, the color used in the object will be shown in the console in real time. If the highlighted text is a color name (e.g.: “blue”) or a hexadecimal code (e.g. : “#FF1234”), the corresponding color will be shown in the console. The function detects highlighted texts using the power of the RStudio API `rstudioapi::getActiveDocumentContext`.
+
+The `print_color` function takes an input of characters or a ggplot object. If the input character includes color names or hexadecimal color codes, the function prints real colors bars corresponding to the color names or hexadecimal codes. If the input is a ggplot object, the function prints all the colors used in the plot. 
+
+The `open_sample` function opens an R file that includes sample codes. Readers are encouraged to try functions in this package. 
+
+The functions `z_pick_color_addin_ribbon()`, `z_pick_color_addin_mosaic()` are two auxiliary functions for RStudio Addins, which let user invode the functions by clicking the button instead of type codes.
+
+# Results
+
+## Print colors in strings or an R object
+
+> Our package is mainly optimzed for console output. Since the html supports minor colors used in R, you may see some consecutive colors which will be fine if viewed in the R console.
+
+The `print_color` function can visualize colors in the console. The `type` argument can be used to specify type of printing. The default is `mosaic`. The following code prints color names and hexadecimal color codes in texts.
+
+```{r}
+# print color in the default moasic type
+print_color(c("red", "navy", "pink", "#E58700", "limegreen"))
+# print color in ribbon type
+print_color(c("red", "navy", "pink", "#E58700", "limegreen"), 
+            type = "r")
+
+```
+
+The below code prints colors included in a palette. The `blank.len` argument can specify the length of color mosaic.
+
+```{r}
+# print color in a palette
+print_color(palette(rainbow(6)), blank.len = 1)
+print_color(palette(rainbow(6)), type = 'r')
+```
+
+The code below prints colors used in a `ggplot` object.
+
+```{r}
+p1 <- ggplot(mpg) +
+  geom_point(aes(displ, cyl, color = manufacturer))
+print_color(p1)
+print_color(p1, type = 'r')
+```
+
+
+## Interactive mode
+
+The `pick_color` function creates an interactive mode in RStudio. The code below demonstrates the usage of this function.
+ 
+```{r, eval=F}
+# Step 1: run the function
+pick_color()
+
+# Step 2: select some texts with cursor
+## ggplot object
+p <- data.frame(x = rnorm(100), y = as.factor(rep(1:5, times = 20))) %>% 
+  ggplot(aes(x = x, fill = y, group=y)) +
+    geom_boxplot()
+## color name
+  "blue red yellow violet"
+## hexadecimal code
+  "#FF2481"
+```
+
+```{r}
+p <- data.frame(x = rnorm(100), y = as.factor(rep(1:5, times = 20))) %>% 
+  ggplot(aes(x = x, fill = y, group=y)) +
+    geom_boxplot()
+
+print_color(p)
+```
+
+
+There is a gif to demonstrate the interactive usage.
+
+![](https://raw.githubusercontent.com/lovestat/seecolor/master/man/figures/2.gif)
+
+## Sample file
+
+The package provides some sample colors for users to play with. If you want to try the `pick_color()` function, I strongly suggest you to use this sample file. 
+- The file is created in the tmp path, which means it will not bother your regular files.
+
+```{r, eval=F}
+# Open the pre-defined test file
+open_sample()
+```
+
+
+## Addins
+
+Like we mentioned earlier, seecolor has the RStudio addins to make invoke `pick_color()` more handy.
+
+![](https://raw.githubusercontent.com/lovestat/seecolor/master/man/figures/addins.png)
+
+
+# Conclusion
+
+The package is created to facilitate color preview in R. It extracts colors used in a plot easily. The `print_color` and `pick_color` functions can detect colors in literals, palettes or `ggplot` objects and prints them in the console in two different ways, i.e. programmingly and interactively. Also, we offer a series of helpful functions to make this convienient.
+
+## Wishlist
+
+- Add the support for other plot objects
+- Integrate with highlight color with RStudio
+
+## Discussion
+For further discussion, you may use [GitHub issues](https://github.com/lovestat/seecolor/issues) to contact the author. And for the further contribution, please submit your suggestion by [GitHub pull request](https://github.com/lovestat/seecolor/pulls).
+
