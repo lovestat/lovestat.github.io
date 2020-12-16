@@ -1,0 +1,5 @@
+new("big.matrix.descriptor", description = list(sharedType = "FileBacked", 
+    filename = "iris_small.bin", dirname = "C:/Users/ss/Dropbox/blog/lovestat.github.io/article/oom_r/", 
+    totalRows = 5L, totalCols = 2L, rowOffset = c(0, 5), colOffset = c(0, 
+    2), nrow = 5, ncol = 2, rowNames = NULL, colNames = NULL, 
+    type = "double", separated = FALSE))

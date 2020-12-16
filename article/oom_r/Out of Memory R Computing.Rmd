@@ -1,0 +1,357 @@
+---
+title: "bigmemory Package"
+author: "Shangchen Song"
+date: "`r Sys.Date()`"
+output: 
+  html_notebook:
+    number_sections: TRUE
+    toc: TRUE
+    toc_float: TRUE
+    theme: united
+    highlight: tango
+---
+
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 12pt;
+}
+h1,h2,h3,h4,h5,h6{
+  font-family: Helvetica;
+}
+</style>
+
+# R with big data
+
+## R is not good at coping with data larger than 10% of the RAM.
+
+> R is not well-suited for working with data larger than 10%-20% of a computer's RAM
+>
+> --- The R installation and administration Manual.
+
+## Swapping is not efficient
+
+1. If the RAM is not enough, the data will be moved to disk. If the disk is not enough, the program will crash.
+
+2. Also, since the disk is much slow than the RAM, execution time increases.
+
+## Scalable solutions
+
+1. Move a subset into RAM
+
+2. Process the subset
+
+3. Keep the result and discard the subset
+
+***
+
+# Overview of the bigmemory package
+
+## When to use `big.matrix`?
+
+1. 20% of the size of RAM
+
+2. Dense matrices
+
+## An overview of bigmemory
+
+1. bigmemory implements the `big.matrix` data type, which is used to create, store, access, and manipulate matrices stored on the disk
+
+2. Data are kept on the disk and moved to RAM implicitly
+
+3. A `big.matrix` object: 
+  - Only needs to be imported once
+  - "backing" file: binary representation of the matrix on the disk
+  - "descriptor file: holds metadata, such as number of rows, columns, names, etc.
+
+## Simimarites between `big.matrix` and `matrix`
+
+- subset
+- assign
+
+
+## Differences between `big.matrix` and `matrix`
+
+- `big.matrix` is stored on the disk
+- `big.matrix` can be shared with multiple R sessions
+
+## `big.matrix` is reference type
+
+- `big.matrix` object will not have a copy when assign to a variable
+- use `deepcopy` to copy `big.matrix` object explicitly
+
+
+***
+
+# The Workflow of the bigmemory package
+
+## Read a `big.matrix` object
+
+```{r}
+
+iris$Species <- as.integer(iris$Species)
+
+write.csv(iris, "iris.csv", row.names = FALSE)
+
+remove("iris")
+library(bigmemory)
+x <- read.big.matrix("iris.csv", header = TRUE,
+                     type = "double",
+                     backingfile = "iris.bin",
+                     descriptorfile = "iris.desc")
+
+class(x)
+dim(x)
+head(x)
+x
+
+x[,]
+```
+
+## Attaching a `big.matrix` object
+
+Now that the `big.matrix` object is on the disk, we can use the information stored in the descriptor file to instantly make it available during an R session. This means that you don't have to reimport the data set, which takes more time for larger files. You can simply point the `bigmemory` package at the existing structures on the disk and begin accessing data without the wait.
+
+```{r}
+big.iris <- attach.big.matrix("iris.desc")
+dim(big.iris)
+head(big.iris)
+```
+
+
+## Copying matrices and big matrices
+
+If you want to copy a `big.matrix` object, then you need to use the `deepcopy()` function. This can be useful, especially if you want to create smaller `big.matrix` objects. 
+
+```{r}
+big.iris.small <- deepcopy(big.iris, cols = 1:2, rows = 1:5,
+                           backingfile = "iris_small.bin",
+                           descriptorfile = "iris_small.desc")
+
+big.iris.small.copy <- big.iris.small
+big.iris.small.copy[1, 1] <- NA
+big.iris.small[1,1]
+big.iris.small.copy[1,1]
+
+big.iris[1,1]
+```
+
+## Slicing the `big.matrix`
+
+```{r}
+## which in base
+index.1 <- which(big.iris[, 1] == 5.0)
+big.iris[index.1, ]
+
+index.2 <- which(big.iris[, 1] == 5.0 & big.iris[, 4] < 0.3)
+big.iris[index.2, ]
+
+
+## mwhich, multi-which
+
+index.3 <- mwhich(big.iris, 1, 5.0, "eq")
+big.iris[index.3, ]
+
+index.4 <- mwhich(big.iris, "Sepal.Length", 5.0, "eq")
+big.iris[index.4, ]
+
+
+index.5 <- mwhich(big.iris, 
+                  c("Sepal.Length", "Petal.Width"), 
+                  list(5.0, 0.3), c("eq", "lt"), "AND")
+big.iris[index.5,  ]
+
+
+index.6 <- mwhich(big.iris, 
+                  c("Sepal.Length", "Petal.Width"), 
+                  list(5.0, c(0.2, 0.3)), list("eq", c("ge", "lt")), "AND")
+big.iris[index.6,  ]
+
+```
+
+
+`which` will extract the corresponding columns, then do the logical comparison, finally return the logical values whose length is equal to the column length. 
+`mwhich()` requires no memory overhead and returns only a vector of indices of length.
+
+
+
+# Associated packages
+
+- Tables and summaries
+  - `biganalytics`: summarizing
+  - `bigtabulate`: splitting and tabulating
+  
+- Linear Algebra
+  - `bigalgebra`
+  
+- Fit models
+  - `bigpca`: pca
+  - `bigFastLM`: linear models
+  - `biglasso`: penalized linear regression and logistic regression
+  - `bigrf`: random forest
+
+
+
+## Creating tables with big.matrix objects
+
+A final advantage to using `big.matrix` is that if you know how to use R's matrices, then you know how to use a `big.matrix.` You can subset columns and rows just as you would a regular matrix, using a numeric or character vector and the object returned is an R `matrix.` Likewise, assignments are the same as with R matrices and after those assignments are made they are stored on disk and can be used in the current and future R sessions.
+
+One thing to remember is that `$` is not valid for getting a column of either a `matrix` or a `big.matrix.`
+
+```{r}
+big.iris[1:3, ]
+
+table(big.iris[, "Petal.Width"])
+```
+## Data summary using biganalytics
+
+```{r}
+# colMeans(big.iris)
+
+biganalytics::colmean(big.iris)
+biganalytics::summary(big.iris)
+```
+
+
+## Tabulating using bigtable
+
+
+The `bigtabulate` package provides optimized routines for creating tables and splitting the rows of big.matrix objects.
+
+```{r}
+library(bigtabulate)
+bigtable(big.iris, "Sepal.Width")
+bigtable(big.iris[1:20,], c("Sepal.Length", "Petal.Width"))
+```
+
+# Split-Apply-Combine (All are base functions)
+
+## Split
+
+```{r}
+spl <- split(1:nrow(big.iris), big.iris[, 5])
+str(spl)
+```
+## Apply
+
+```{r}
+spe.mean.and.median <- Map(function(rows) c(mean(big.iris[rows, 1]), median(big.iris[rows, 1])), spl)
+
+
+str(spe.mean.and.median)
+```
+
+## Combine
+
+```{r}
+spe.summary <- Reduce(rbind, spe.mean.and.median)
+
+dimnames(spe.summary) <- list(unique(levels(iris[,5])), c("mean", "median"))
+
+spe.summary
+```
+
+
+```{r}
+fit <- biglm.big.matrix(Sepal.Length ~ Sepal.Width + Petal.Length, data = big.iris)
+summary(fit)
+
+summary(lm(Sepal.Length ~ Sepal.Width + Petal.Length, data = iris))
+```
+
+
+
+```{r}
+library(oem)
+y <- rnorm(nrows) + bigmat[,1] - bigmat[,2]
+
+x
+x <- deepcopy(big.iris, cols = 1:3)
+
+y <-  rnorm(150)
+
+fit <- big.oem(x = x, y = y,
+               penalty = c("lasso"))
+
+fit$beta
+
+fit2 <- oem(x = bigmat[,], y = y,
+            penalty = c("lasso", "grp.lasso"),
+            groups = rep(1:20, each = 5))
+```
+
+
+
+```{r}
+if (T) {
+set.seed(123)
+nrows <- 50000
+ncols <- 100
+bkFile <- "bigmat.bk"
+descFile <- "bigmatk.desc"
+bigmat <- filebacked.big.matrix(nrow=nrows, ncol=ncols, type="double",
+                                backingfile=bkFile, backingpath=".",
+                                descriptorfile=descFile,
+                                dimnames=c(NULL,NULL))
+
+# Each column value with be the column number multiplied by
+# samples from a standard normal distribution.
+set.seed(123)
+for (i in 1:ncols) bigmat[,i] = rnorm(nrows)*i
+
+y <- rnorm(nrows) + bigmat[,1] - bigmat[,2]
+
+fit <- big.oem(x = bigmat, y = y,
+               penalty = c("mcp"))
+str(fit)
+
+bigmat
+big.iris
+fit2 <- oem(x = bigmat[,], y = y,
+            penalty = c("lasso", "grp.lasso"),
+            groups = rep(1:20, each = 5))
+
+max(abs(fit$beta[[1]] - fit2$beta[[1]]))
+
+layout(matrix(1:2, ncol = 2))
+plot(fit)
+plot(fit, which.model = 2)
+}
+```
+
+# Limitations of bigmemory
+
+## Where can you use bigmemory?
+- You can use bigmemory when your data are
+  - matrices
+  - dense
+    - new package `bigsparser`
+  - numeric
+  
+- Underlying data structures are compatible with low-level linear algebra libraries for fast model fitting. (Use c/c++ libraries directly)
+
+- if you have different column types, you could try the `ff` pacakge, which is similar to bigmemory but includes a data.frame like data structure.
+
+## Understanding disk access
+
+> A big.matrix object is a data structure designed for random access.
+
+- If the entries required are in the RAM, then they will be returnbe immediately.
+- If the entries required are not in the RAM, then they will be imported from disk to the RAM.
+- Since the retreating is almost equally fast, this data structure is called random access data structure.
+  
+
+## Disadvantages of random access
+
+- can't add rows or columns to an existing `big.matrix` object
+- you need to have enough disk space to hold the entire matrix in one big block (in a single disk)
+  
+
+# The Design of the big.matrix class
+
+
+
+
+# Reference
+
+- Scalable Data Processing in R, datacamp

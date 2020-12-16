@@ -46,11 +46,9 @@ options(crayon.enabled=TRUE)
 
 ## Motivation
 
-Data visualization is an essential part of communicating scientific findings in biostatistics and data science. Plots with appropriate colors better represent the data and are easier to read. 
+Data visualization is essential to communicating scientific findings in biostatistics and data science. Plots with appropriate colors better represent the data and are easier to read. 
 
-However, to select an appropriate color is not always an easy topic. Although many packages offer palettes and automatic colors filling, users may want to have a way to preview the colors immediately. 
-
-Thus, the issue is what our package [{seecolor}](http://shangchen.org/seecolor) is able to solve. For instance, 
+However, selecting appropriate colors is not always an easy topic. Although many packages offer palettes and automatic color filling, users may want to have a way to preview the colors immediately, **which is the exact issue that our package [{seecolor}](http://shangchen.org/seecolor) is able to solve**. For instance, 
 
 ```{r}
 ## Preview colors using seecolor package
@@ -59,12 +57,12 @@ seecolor::print_color(c("cyan", "#0000FF", "yellow"), type = "r")
 
 ## Overview
 
-In `r fontawesome::fa("r-project", fill = "red")`, colors may be specified either 
+In `r fontawesome::fa("r-project", fill = "red")`, colors may be specified either by
 
-- by name (e.g. "blue")
-- by hexadecimal code (e.g. "#FF1234"), 
-- by a palette (e.g. offered in the `viridis`, `RColorBrewer` and `ggsci` packages.) 
-- by being contained in a plot object. 
+- name (e.g. "blue")
+- hexadecimal code (e.g. "#FF1234"), 
+- a palette (e.g. offered in the `viridis`, `RColorBrewer` and `ggsci` packages) 
+- or being contained in a plot object. 
 
 To this end, our `seecolor` package provides corresponding ways visualizing colors used in a `literals`, a `palette`, or a `ggplot2` object in the console. Specifically, 
 
