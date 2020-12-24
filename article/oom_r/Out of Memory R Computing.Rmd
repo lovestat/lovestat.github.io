@@ -105,7 +105,7 @@ dim(x)
 head(x)
 x
 
-x[,]
+# x[,]
 ```
 
 ## Attaching a `big.matrix` object
@@ -116,6 +116,43 @@ Now that the `big.matrix` object is on the disk, we can use the information stor
 big.iris <- attach.big.matrix("iris.desc")
 dim(big.iris)
 head(big.iris)
+
+
+apply(iris,2,sd)
+
+big.iris * matrix(1, nrow = 5, ncol = 1)
+
+big.iris %*%  matrix(1, nrow = 5, ncol = 1)
+
+big.iris %*% as.big.matrix(matrix(1, nrow = 5, ncol = 1))
+
+
+(as.big.matrix(matrix(1, nrow = 5, ncol = 5)) + as.big.matrix(matrix(1, nrow = 5, ncol = 1))  )[,]
+
+matrix(1, nrow = 5, ncol = 5) %*% matrix(1, nrow = 5, ncol = 1)
+
+((as.big.matrix(matrix(1, nrow = 5, ncol = 5))) * 2 )[,]
+  
+
+
+aaa <- matrix(1, nrow = 5, ncol = 5) * as.vector(1:5)
+
+matrix(1, nrow = 5, ncol = 5)
+       
+dim(big.iris)
+
+apply(matrix(1, nrow = 5, ncol = 5), 2,
+      function(x) x * as.vector(1:5))
+
+apply(as.big.matrix(matrix(1, nrow = 5, ncol = 5)), 2,
+      function(x) x * as.vector(1:5))
+
+colsums(big.iris)
+
+big.iris
+
+apply(big.iris, 2, sd)
+biganalytics::colsd(big.iris)
 ```
 
 
