@@ -1,0 +1,37 @@
+---
+title: "Model Performance for Cox Models"
+author: "Shangchen Song"
+date: "`r Sys.Date()`"
+output: rmdformats::downcute
+---
+
+# Quantifying predictive accuracy in Cox models
+
+- $R^2$
+- **Concordance (C-index)**
+
+But both of the above measurements cannot reflect **overfitting**.
+
+# Combating the overfitting in Cox models
+
+## Optimism
+
+**The reduction in error due to overfitting.**
+
+### Patrick Breheny's Lecture Notes
+Let $M$ denotes a generic measure of accuracy, $y$ denote the observed outcomes (for survival, this includes t and d), $y^*$ denotes future outcomes, and $f(X)$ denotes a model’s predictions.
+
+Because of this phenomenon of overfitting, the quantity $$M\{f(X), y\} − M\{f(X), y^*\}$$ is almost always positive; this quantity is known as the optimism of the model, and it tends to be more severe for complex models than simple models.
+
+### ESL
+
+$$op \equiv {Err}_{in} - \overline{err}$$
+where $op$ is optimism, ${Err}_{in}$ is in-sample error, $\overline{err}$ is training error.
+
+## Shinkage
+
+
+
+# Reference
+1. https://myweb.uiowa.edu/pbreheny/7210/f15/notes/11-19.pdf
+2. https://thestatsgeek.com/2014/10/04/adjusting-for-optimismoverfitting-in-measures-of-predictive-ability-using-bootstrapping/
