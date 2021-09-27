@@ -1,0 +1,28 @@
+---
+title: "Dummy Variables"
+output:
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    toc: true
+toc-title: "Table of Contents"
+---
+
+
+### 1. Why dummy variables?
+
+- [Working With Dummy Variables](https://dss.princeton.edu/online_help/analysis/dummy_variables.htm)
+
+### 2. Dummy variables standardization or not?
+
+- [Quora::How bad is it to standardize dummy variables?
+](https://www.quora.com/How-bad-is-it-to-standardize-dummy-variables)
+
+### 3. Dummy variables standardization in penalized regressions
+
+- [Stackexchange::whether to rescale indicator / binary / dummy predictors for LASSO](https://stats.stackexchange.com/questions/69568/whether-to-rescale-indicator-binary-dummy-predictors-for-lasso)
+
+  - Most voted answer says Robert Tibshirani suggests to standardize all predictors, including dummies, in the penalized regression to let them receive fair penalties.
+  
+- [A deep dive into glmnet: standardize](https://statisticaloddsandends.wordpress.com/2018/11/15/a-deep-dive-into-glmnet-standardize/)
+
