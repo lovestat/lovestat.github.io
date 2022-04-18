@@ -1,0 +1,54 @@
+---
+title: "HiperGator Parallel by Array Jobs"
+output:
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    toc: true
+toc-title: "Table of Contents"
+---
+
+On personal computer, deploying a job on multiple CPU's usually requires extra coding work with parallel packages, e.g., `{foreach}`, `{parallel}`. However, in HPC system, doing parallel can be extensively simplified by setting array jobs in a `.slurm` script. The latter can additional bring bonus that break the MPI limitations.
+
+# 1. Parallel by Array Jobs
+
+```{bash, eval = FALSE}
+#!/bin/sh
+#SBATCH --job-name=JOBNAME 
+#SBATCH --array=1-10
+#SBATCH --account=ACCOUNT
+#SBATCH --qos=QOS
+#SBATCH --mail-type=ALL    
+#SBATCH --mail-user=USER@ufl.edu  
+#SBATCH --ntasks=1                     # Run on a single machine (node)
+#SBATCH --cpus-per-task 16             # Run on 16 CPUs
+#SBATCH --mem=32gb                     # Memory limit
+#SBATCH --time=48:00:00                # RunTimeLimit: hrs:min:sec
+#SBATCH --output=JOBNAME.out           # Output and error log 
+
+pwd; hostname; date 
+
+module load R 
+
+echo "Running" 
+
+R CMD BATCH --vanilla JOBNAME.R impute-by-folds.$SLURM_ARRAY_TASK_ID.Rout
+
+date
+```
+
+
+
+# 2. Parallel by `{foreach}`
+
+## Pros
+
+- Can be programmed and delivered with a package and not need to manually set up.
+
+## Cons
+
+- The total number of the working CPU's are limited because on one node (computer), the number of the CPU's are up to 128. The MPI technique should be required if additional CPU's are requested.
+
+- It seems that the nested `for` loop in `{foreach}` (with `%:%`) can only parallelize one loop and faces a question: **which loop to parallelize?**. Also `%:%` will output a `foreach` object to the next loop, which means that between operations are not allowed for these two `for` loops.
+
+
